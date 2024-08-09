@@ -18,6 +18,7 @@ FarmWatch is a web application developed with Flask that integrates a chatbot an
 - **`pest_names.json`**: JSON file containing the class names for pests.
 - **`pest_detection_model.keras`**: Trained model for pest detection.
 - **`plant_disease_detection.keras`**: Trained model for plant disease detection.
+- **`app.py`**: The web application in question using Flask 
 
 ## How to Run Locally
 
