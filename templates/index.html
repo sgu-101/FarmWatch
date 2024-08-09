@@ -3,30 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pest Detection</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>FarmWatch</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-image: url('{{ url_for("static", filename="background.jpg") }}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin-top: 60px; /* Space from the top of the viewport */
+        }
+        .title {
+            text-align: center;
+            font-size: 3em;
+            font-weight: bold;
+            color: #2c6f6c; /* Green color */
+            margin-bottom: 20px;
+            border-bottom: 4px solid #2c6f6c; /* Accent border */
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #2c6f6c;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input[type="text"], input[type="file"], select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        input[type="submit"] {
+            background-color: #2c6f6c;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #1d4f4d;
+        }
+        #prediction-result, #agripilot-response {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1 class="mt-5">Pest Detection using ML Model</h1>
-        <form action="/predict" method="post" enctype="multipart/form-data" class="mt-4">
-            <div class="form-group">
-                <label for="file">Upload Image:</label>
-                <input type="file" name="file" id="file" class="form-control-file">
-            </div>
-            <button type="submit" class="btn btn-primary">Predict</button>
+        <!-- Title -->
+        <div class="title">FarmWatch</div>
+
+        <!-- Upload Form for Pest and Disease Detection -->
+        <h2>Upload Image for Pest or Disease Detection</h2>
+        <form method="POST" action="/predict" enctype="multipart/form-data">
+            <label for="model_type">Select Model:</label>
+            <select id="model_type" name="model_type">
+                <option value="pest">Pest Detection</option>
+                <option value="disease">Disease Detection</option>
+            </select>
+            <label for="file">Upload Image:</label>
+            <input type="file" id="file" name="file" accept="image/*">
+            <input type="submit" value="Predict">
         </form>
-        {% if prediction_text %}
-        <div class="alert alert-info mt-4">
-            <h2>{{ prediction_text }}</h2>
+
+        <!-- Display Prediction Result -->
+        <div id="prediction-result">
+            {% if prediction_text %}
+                <h3>Prediction Result:</h3>
+                <p>{{ prediction_text }}</p>
+            {% endif %}
         </div>
-        {% endif %}
+
+        <!-- Agri-Pilot Section -->
+        <h2>Agri-Pilot: Ask Your Agricultural Questions</h2>
+        <form method="POST" action="/agripilot">
+            <label for="user_input">Enter your question:</label>
+            <input type="text" id="user_input" name="user_input">
+            <input type="submit" value="Ask Agri-Pilot">
+        </form>
+
+        <div id="agripilot-response">
+            <!-- Display Agri-Pilot's response here -->
+        </div>
     </div>
 
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // AJAX to handle form submission for Agri-Pilot and updating response without reloading the page
+        document.querySelector('form[action="/agripilot"]').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+
+            fetch('/agripilot', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('agripilot-response').innerText = data.response;
+            });
+        });
+    </script>
 </body>
 </html>
