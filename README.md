@@ -2,6 +2,10 @@
 
 FarmWatch is a web application developed with Flask that integrates a chatbot and convolutional neural network (CNN) models to classify pests and plant diseases.
 
+# Demo
+
+https://youtu.be/qRbl7Mcc1oQ
+
 ## Features
 
 - **Chatbot Integration**: Ask questions about agricultural practices and get expert advice through the Agri-Pilot chatbot.
